@@ -1,0 +1,10 @@
+[project]
+name = "amu-utilities"
+version = "0.1.0"
+description = "An MCP Server that helps students of AMU to retrive information very easily."
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "fastmcp>=3.4.2",
+    "pywin32>=312",
+]
