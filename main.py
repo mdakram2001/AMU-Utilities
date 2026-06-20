@@ -12,7 +12,7 @@ async def test_bytes() -> bytes:
     return b"hello world"
 
 
-@mcp.tool(name="Get Result")
+@mcp.tool(name="Get-Result")
 async def get_result_pdf(
     enrollment: str,
     faculty_no: str,
