@@ -7,6 +7,11 @@ mcp = FastMCP("AMU Utilities")
 
 # Tools
 
+@mcp.tool()
+async def test_bytes() -> bytes:
+    return b"hello world"
+
+
 @mcp.tool(name="Get Result")
 async def get_result_pdf(
     enrollment: str,
@@ -47,7 +52,7 @@ def server_info()->str:
         "name":"AMU Utilities",
         "version":"1.0.0",
         "description":"An MCP Server that helps students of AMU to retrieve information very easily.",
-        "tools":[],
+        "tools":["get_result_pdf"],
         "author":"Md Ahmod Akram Choudhury"
     }
     return json.dumps(info, indent=2)
