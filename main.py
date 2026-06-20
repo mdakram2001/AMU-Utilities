@@ -13,7 +13,7 @@ def server_info()->str:
     info = {
         "name":"AMU Utilities",
         "version":"1.0.0",
-        "description":"An MCP Server that helps students of AMU to retrive information very easily.",
+        "description":"An MCP Server that helps students of AMU to retrieve information very easily.",
         "tools":[],
         "author":"Md Ahmod Akram Choudhury"
     }
