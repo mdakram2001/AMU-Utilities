@@ -8,9 +8,8 @@ mcp = FastMCP("AMU Utilities")
 # Tools
 
 @mcp.tool()
-async def test_bytes() -> bytes:
-    return b"hello world"
-
+async def About_Us() -> str:
+    return server_info()
 
 @mcp.tool()
 async def get_result_pdf(
@@ -34,11 +33,13 @@ async def get_result_pdf(
             }
         )
 
-        r = await client.get("https://ccae-amucoe.com/result_display/result_display_nonfyup_pdf.php")
+        r = await client.get(
+            "https://ccae-amucoe.com/result_display/result_display_nonfyup_pdf.php"
+        )
 
-        content_type = r.headers.get("content-type", "").lower()
-
-        if "application/pdf" not in content_type:
+        if "application/pdf" not in r.headers.get(
+            "content-type", ""
+        ).lower():
             raise ValueError("PDF not returned")
 
         return r.content
