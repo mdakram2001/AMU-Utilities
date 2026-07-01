@@ -3,17 +3,18 @@ import urllib.request
 from typing import List, Dict, Any, Annotated
 from pydantic import BaseModel, Field, field_validator
 from utilities.stationSearch import find_station_code
-from datetime import date
+from datetime import date, datetime
 
 class FindTicket(BaseModel):
     source: Annotated[str, Field(..., description='Source Station Code or Name')]
     destination: Annotated[str, Field(..., description='Destination Station Code or Name')]
-    date_of_journey: Annotated[str, Field(..., pattern=r"\d{2}-\d{2}-\d{4}", description='Date of Journey in DD-MM-YYYY format')]
+    date_of_journey: Annotated[date, Field(..., description='Date of Journey in DD-MM-YYYY format')]
 
     @field_validator("date_of_journey", mode='before')
     @classmethod
     def validate_date(cls, val):
         d = datetime.strptime(val, "%d-%m-%Y").date()
+        
         if d < date.today():
             raise ValueError("Journey date cannot be in the past.")
         return d
@@ -31,7 +32,7 @@ def find_train_availability(
     # Standardize input for comparison
     source_code = find_station_code(find_ticket.source)
     dest_code = find_station_code(find_ticket.destination)
-    target_date = find_ticket.date_of_journey.strip()  # Expected format DD-MM-YYYY
+    target_date = find_ticket.date_of_journey.strftime("%d-%m-%Y")  # Expected format DD-MM-YYYY
 
     if not source_code or not dest_code:
         raise ValueError(f"Please Enter the Correct Source/Destination Code'{find_ticket.source}' or destination '{find_ticket.destination}'")

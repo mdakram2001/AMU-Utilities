@@ -15,6 +15,10 @@ async def root():
 
 @app.get('/about-us')
 async def About_Us():
+    """
+    This will return information about the AMU Utilities.
+    It is a MCP server that helps students of AMU to retrieve information very easily.
+    """
     info = {
         "name":"AMU Utilities",
         "version":"1.0.0",
@@ -31,6 +35,13 @@ async def get_result_pdf(
     faculty_no: str,
     full_name: str
 ) -> bytes:
+    """
+    This will help AMU student to get their result of semester exam.
+    :param enrollment: Enrollment Number of the student.
+    :param faculty_no: Faculty Number of the student.
+    :param full_name: Full Name of the student.
+    :return: PDF of the result.
+    """
     student = Student(
         enrollment_no=enrollment,
         faculty_no=faculty_no,
@@ -52,6 +63,14 @@ def get_train_ticket(
     destination: str,
     date_of_journey: str
 ) -> List[Dict[str, Any]]:
+    """
+    This will help AMU student to get their ticket of any train. User just need to provide their source, destination and date of journey.
+    
+    :param source: Source Station Code or Name.
+    :param destination: Destination Station Code or Name.
+    :param date_of_journey: Date of Journey in DD-MM-YYYY format.
+    :return: List of trains with their availability details.
+    """
     find_ticket = FindTicket(
         source=source,
         destination=destination,
