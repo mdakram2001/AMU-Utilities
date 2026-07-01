@@ -96,10 +96,10 @@ def find_train_availability(
                         "class": travel_class,
                         "availability": info.get("availability", "N/A"),
                         "fare": info.get("fare", "N/A"),
-                        "prediction": info.get("prediction", "N/A"),
-                        "prediction_percentage": info.get("predictionPercentage", 0),
+                        # "prediction": info.get("prediction", "N/A"),
+                        # "prediction_percentage": info.get("predictionPercentage", 0),
                         "confirm_status": info.get("confirmTktStatus", "N/A"),
-                        "display_name": info.get("availabilityDisplayName", "N/A")
+                        # "display_name": info.get("availabilityDisplayName", "N/A")
                     })
             
             # If classes found for the given date, append train details
@@ -107,11 +107,11 @@ def find_train_availability(
                 results.append({
                     "train_number": train.get("trainNumber"),
                     "train_name": train.get("trainName"),
-                    "from_station": f"{train.get('fromStnName')} ({train.get('fromStnCode')})",
-                    "to_station": f"{train.get('toStnName')} ({train.get('toStnCode')})",
+                    # "from_station": f"{train.get('fromStnName')} ({train.get('fromStnCode')})",
+                    # "to_station": f"{train.get('toStnName')} ({train.get('toStnCode')})",
                     "departure_time": train.get("departureTime"),
-                    "arrival_time": train.get("arrivalTime"),
-                    "duration_mins": train.get("duration"),
+                    # "arrival_time": train.get("arrivalTime"),
+                    # "duration_mins": train.get("duration"),
                     "running_days": train.get("runningDays"),
                     "availability": matching_classes
                 })
