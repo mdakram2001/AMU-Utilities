@@ -5,19 +5,18 @@ from pydantic import BaseModel, Field, field_validator
 from utilities.stationSearch import find_station_code
 from datetime import date
 
-
 class FindTicket(BaseModel):
     source: Annotated[str, Field(..., description='Source Station Code or Name')]
     destination: Annotated[str, Field(..., description='Destination Station Code or Name')]
     date_of_journey: Annotated[str, Field(..., pattern=r"\d{2}-\d{2}-\d{4}", description='Date of Journey in DD-MM-YYYY format')]
 
-    @field_validator('date_of_journey', mode='before')
+    @field_validator("date_of_journey", mode='before')
     @classmethod
-    def validate_date(cls,val):
-        d = datetime.fromisoformat(val.replace("-",""))
-        if d < datetime.today():
-            raise ValueError("Date of Journey cannot be in the past")
-        return val
+    def validate_date(cls, val):
+        d = datetime.strptime(val, "%d-%m-%Y").date()
+        if d < date.today():
+            raise ValueError("Journey date cannot be in the past.")
+        return d
 
 def find_train_availability(
     find_ticket: FindTicket
