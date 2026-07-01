@@ -1,13 +1,10 @@
 from fastmcp import FastMCP
 from main import app
+import json
 
 mcp = FastMCP.from_fastapi(
     app=app,
     name="Amu Utilities",
-    description="",
-    version="1.0.0",
-    author="Md Ahmod Akram Choudhury",
-    profile="https://akramchy.me"
 )
 
 @mcp.resource("info://server")
