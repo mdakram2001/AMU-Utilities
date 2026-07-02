@@ -1,24 +1,23 @@
 import json
 from rapidfuzz import process, fuzz
 
+with open("stationList.json", "r", encoding="utf-8") as f:
+    STATIONS = json.load(f)
 
-def find_station_code(query, json_file="stationList.json", score_cutoff=70):
-    with open(json_file, "r", encoding="utf-8") as f:
-        stations = json.load(f)
-
+def find_station_code(query, score_cutoff=70):
     query = query.strip().upper()
 
     # Exact code
-    if query in stations:
+    if query in STATIONS:
         return query
 
     # Exact name
-    for code, name in stations.items():
+    for code, name in STATIONS.items():
         if query == name.upper():
             return code
 
     choices = {}
-    for code, name in stations.items():
+    for code, name in STATIONS.items():
         choices[code.upper()] = code
         choices[name.upper()] = code
 

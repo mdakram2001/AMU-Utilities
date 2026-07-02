@@ -64,7 +64,7 @@ async def get_result_pdf(
     )
 
 @app.post('/aka820', operation_id='Find Train Ticket')
-def get_train_ticket(
+async def get_train_ticket(
     source: str,
     destination: str,
     date_of_journey: str
@@ -82,7 +82,7 @@ def get_train_ticket(
         destination=destination,
         date_of_journey=date_of_journey
     )
-    return find_train_availability(find_ticket)
+    return await find_train_availability(find_ticket)
 
 
 
