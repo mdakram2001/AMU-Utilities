@@ -5,15 +5,21 @@ from fastapi import FastAPI
 from fastapi.responses import Response
 from typing import List, Any, Dict
 
-app = FastAPI(title="AMU Utilities")
+app = FastAPI(
+    title="AMU Utilities",
+    docs_url="/docs818",
+    redoc_url="/redoc818",
+    openapi_url="/openapi818.json",
+    )
+
 
 # Tools
 @app.get("/")
 async def root():
-    return {"message": "Home Page"}
+    return {"message": "This Page is Currently Unavailable..."}
 
 
-@app.get('/about-us')
+@app.get('/aka818', operation_id='About Us')
 async def About_Us():
     """
     This will return information about the AMU Utilities.
@@ -23,13 +29,13 @@ async def About_Us():
         "name":"AMU Utilities",
         "version":"1.0.0",
         "description":"An MCP Server that helps students of AMU to retrieve information very easily.",
-        "tools":["get_result_pdf", "find_ticket"],
-        "author":"Md Ahmod Akram Choudhury",
-        "profile":"https://akramchy.me"
+        "tools":["get_result_pdf", "get_train_ticket"],
+        "Developer":"Md Ahmod Akram Choudhury",
+        "profile":"https://www.linkedin.com/in/md-ahmod-akram-choudhury/"
     }
     return info
 
-@app.post('/get_result')
+@app.post('/aka819', operation_id='Get Result')
 async def get_result_pdf(
     enrollment: str,
     faculty_no: str,
@@ -57,7 +63,7 @@ async def get_result_pdf(
         }
     )
 
-@app.post('/find_ticket')
+@app.post('/aka820', operation_id='Find Train Ticket')
 def get_train_ticket(
     source: str,
     destination: str,
