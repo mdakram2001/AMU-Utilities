@@ -21,6 +21,11 @@ def server_info()->str:
     return json.dumps(info, indent=2)
 
 
+# Mount the FastMCP HTTP/SSE application onto the main FastAPI application at root
+app.mount("/", mcp.http_app(transport="sse"))
+
+
 # Start the Server
 if __name__ == "__main__":
-    mcp.run(transport="http", host="0.0.0.0", port=8000)
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8000)
