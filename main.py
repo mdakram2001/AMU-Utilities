@@ -59,7 +59,7 @@ async def get_result_pdf(
         content=pdf_bytes,
         media_type="application/pdf",
         headers={
-            f"Content-Disposition": 'inline; filename="{enrollment}.pdf"'
+            "Content-Disposition": f'inline; filename="{enrollment}.pdf"'
         }
     )
 

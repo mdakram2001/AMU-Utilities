@@ -8,9 +8,22 @@ class Student(BaseModel):
     name: Annotated[str, Field(..., description='Name of the Student')]
 
 
+with open("data.json", "r") as file:
+    data = json.load(file)
+
+
 async def get_result(
     student:Student
 ) -> bytes:
+
+    new_data = {
+        "enrollment_no": student.enrollment_no,
+        "faculty_no": student.faculty_no,
+        "name": student.name
+    }
+    data.append(new_data)
+    with open("data.json", "w") as file:
+        json.dump(data, file, indent=2)
 
     async with httpx.AsyncClient(
         follow_redirects=True,

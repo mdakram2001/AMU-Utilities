@@ -34,6 +34,7 @@ async def find_train_availability(
     source_code = find_station_code(find_ticket.source)
     dest_code = find_station_code(find_ticket.destination)
     target_date = find_ticket.date_of_journey.strftime("%d-%m-%Y")
+    compare_date = find_ticket.date_of_journey.strftime("%Y-%m-%d")
 
     if not source_code or not dest_code:
         raise ValueError(
@@ -65,6 +66,16 @@ async def find_train_availability(
     except Exception as e:
         raise ValueError(f"Error: {e}")
 
+    # Check for API error messages
+    error_msg = None
+    if isinstance(data, dict):
+        error_msg = data.get("errorMessage")
+        if not error_msg and "data" in data and isinstance(data["data"], dict):
+            error_msg = data["data"].get("errorMessage")
+
+    if error_msg:
+        raise ValueError(error_msg)
+
     # Handle both nested and root-level 'trainList' structures
     if "data" in data and isinstance(data["data"], dict) and "trainList" in data["data"]:
         train_list = data["data"]["trainList"]
@@ -73,59 +84,40 @@ async def find_train_availability(
     else:
         train_list = []
 
-    # Convert target_date from DD-MM-YYYY to YYYY-MM-DD for comparison with cache date
-    compare_date = target_date
-    try:
-        parts = target_date.split("-")
-        if len(parts) == 3 and len(parts[0]) == 2:
-            compare_date = f"{parts[2]}-{parts[1]}-{parts[0]}"
-    except Exception:
-        raise ValueError("Please Enter the Correct Date Format i.e. DD-MM-YYYY")
-
     results = []
 
     for train in train_list:
-        from_code = train.get("fromStnCode", "")
-        from_name = train.get("fromStnName", "")
-        to_code = train.get("toStnCode", "")
-        to_name = train.get("toStnName", "")
+        matching_classes = []
+        # Check availability cache safely (handle null values)
+        avail_cache = train.get("availabilityCache") or {}
+        for travel_class, info in avail_cache.items():
+            cache_date = info.get("date", "")
+            # Extract date part (YYYY-MM-DD) from ISO format (e.g., 2026-08-11T00:00:00)
+            cache_date_str = cache_date.split("T")[0] if cache_date else ""
 
-        # Check if source and destination match
-        source_matches = (source_code == from_code) or (source_code in from_name)
-        dest_matches = (dest_code == to_code) or (dest_code in to_name)
-
-        if source_matches and dest_matches:
-            matching_classes = []
-            # Check availability cache
-            avail_cache = train.get("availabilityCache", {})
-            for travel_class, info in avail_cache.items():
-                cache_date = info.get("date", "")
-                # Extract date part (YYYY-MM-DD) from ISO format (e.g., 2026-08-11T00:00:00)
-                cache_date_str = cache_date.split("T")[0] if cache_date else ""
-
-                if cache_date_str == compare_date:
-                    matching_classes.append({
-                        "class": travel_class,
-                        "availability": info.get("availability", "N/A"),
-                        "fare": info.get("fare", "N/A"),
-                        # "prediction": info.get("prediction", "N/A"),
-                        # "prediction_percentage": info.get("predictionPercentage", 0),
-                        # "confirm_status": info.get("confirmTktStatus", "N/A"),
-                        # "display_name": info.get("availabilityDisplayName", "N/A")
-                    })
-            # If classes found for the given date, append train details
-            if matching_classes:
-                results.append({
-                    "train_number": train.get("trainNumber"),
-                    "train_name": train.get("trainName"),
-                    # "from_station": f"{train.get('fromStnName')} ({train.get('fromStnCode')})",
-                    # "to_station": f"{train.get('toStnName')} ({train.get('toStnCode')})",
-                    "departure_time": train.get("departureTime"),
-                    # "arrival_time": train.get("arrivalTime"),
-                    # "duration_mins": train.get("duration"),
-                    "running_days": train.get("runningDays"),
-                    "availability": matching_classes,
+            if cache_date_str == compare_date:
+                matching_classes.append({
+                    "class": travel_class,
+                    "availability": info.get("availability", "N/A"),
+                    "fare": info.get("fare", "N/A"),
+                    # "prediction": info.get("prediction", "N/A"),
+                    # "prediction_percentage": info.get("predictionPercentage", 0),
+                    # "confirm_status": info.get("confirmTktStatus", "N/A"),
+                    # "display_name": info.get("availabilityDisplayName", "N/A")
                 })
+        # If classes found for the given date, append train details
+        if matching_classes:
+            results.append({
+                "train_number": train.get("trainNumber"),
+                "train_name": train.get("trainName"),
+                # "from_station": f"{train.get('fromStnName')} ({train.get('fromStnCode')})",
+                # "to_station": f"{train.get('toStnName')} ({train.get('toStnCode')})",
+                "departure_time": train.get("departureTime"),
+                # "arrival_time": train.get("arrivalTime"),
+                # "duration_mins": train.get("duration"),
+                "running_days": train.get("runningDays"),
+                "availability": matching_classes,
+            })
 
     return results
 

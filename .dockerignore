@@ -1,0 +1,9 @@
+.git
+.venv
+__pycache__
+*.pyc
+.gemini
+.agents
+*.log
+uv.lock
+.python-version
