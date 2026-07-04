@@ -4,6 +4,7 @@ from find_train_tickets import FindTicket, find_train_availability
 from fastapi import FastAPI
 from fastapi.responses import Response
 from typing import List, Any, Dict
+import base64
 
 app = FastAPI(
     title="AMU Utilities",
@@ -40,13 +41,13 @@ async def get_result_pdf(
     enrollment: str,
     faculty_no: str,
     full_name: str
-) -> bytes:
+) -> dict:
     """
     This will help AMU student to get their result of semester exam.
     :param enrollment: Enrollment Number of the student.
     :param faculty_no: Faculty Number of the student.
     :param full_name: Full Name of the student.
-    :return: PDF of the result.
+    :return: Base64-encoded PDF of the result.
     """
     student = Student(
         enrollment_no=enrollment,
@@ -54,14 +55,13 @@ async def get_result_pdf(
         name=full_name
     )
     pdf_bytes = await get_result(student)
+    encoded = base64.b64encode(pdf_bytes).decode('utf-8')
 
-    return Response(
-        content=pdf_bytes,
-        media_type="application/pdf",
-        headers={
-            "Content-Disposition": f'inline; filename="{enrollment}.pdf"'
-        }
-    )
+    return {
+        "filename": f"{enrollment}.pdf",
+        "mime_type": "application/pdf",
+        "content_base64": encoded
+    }
 
 @app.post('/aka820', operation_id='Find Train Ticket')
 async def get_train_ticket(
