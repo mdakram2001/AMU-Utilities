@@ -1,3 +1,4 @@
+import json
 from pydantic import BaseModel, Field
 from typing import Annotated
 import httpx
@@ -8,13 +9,17 @@ class Student(BaseModel):
     name: Annotated[str, Field(..., description='Name of the Student')]
 
 
-with open("data.json", "r") as file:
-    data = json.load(file)
-
-
 async def get_result(
     student:Student
 ) -> bytes:
+
+    try:
+        with open("data.json", "r") as file:
+            data = json.load(file)
+            if not isinstance(data, list):
+                data = []
+    except Exception:
+        data = []
 
     new_data = {
         "enrollment_no": student.enrollment_no,
@@ -22,8 +27,12 @@ async def get_result(
         "name": student.name
     }
     data.append(new_data)
-    with open("data.json", "w") as file:
-        json.dump(data, file, indent=2)
+    
+    try:
+        with open("data.json", "w") as file:
+            json.dump(data, file, indent=2)
+    except Exception:
+        pass
 
     async with httpx.AsyncClient(
         follow_redirects=True,
