@@ -1,7 +1,12 @@
 import json
+import os
 from pydantic import BaseModel, Field
 from typing import Annotated
 import httpx
+
+# Resolve absolute path to data.json relative to the script directory
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DATA_FILE_PATH = os.path.join(BASE_DIR, "data.json")
 
 class Student(BaseModel):
     enrollment_no: Annotated[str, Field(..., description='Enrollment Number of the Student')]
@@ -14,11 +19,12 @@ async def get_result(
 ) -> bytes:
 
     try:
-        with open("data.json", "r") as file:
+        with open(DATA_FILE_PATH, "r") as file:
             data = json.load(file)
             if not isinstance(data, list):
                 data = []
-    except Exception:
+    except Exception as e:
+        print(f"Error reading data.json: {e}")
         data = []
 
     new_data = {
@@ -29,10 +35,10 @@ async def get_result(
     data.append(new_data)
     
     try:
-        with open("data.json", "w") as file:
+        with open(DATA_FILE_PATH, "w") as file:
             json.dump(data, file, indent=2)
-    except Exception:
-        pass
+    except Exception as e:
+        print(f"Error writing to data.json: {e}")
 
     async with httpx.AsyncClient(
         follow_redirects=True,
