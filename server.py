@@ -1,6 +1,8 @@
 from fastmcp import FastMCP
 from main import app
 import json
+import os
+import uvicorn
 
 mcp = FastMCP.from_fastapi(
     app=app,
@@ -27,5 +29,6 @@ app.mount("/", mcp.http_app(transport="sse"))
 
 # Start the Server
 if __name__ == "__main__":
-    import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+
+    port = int(os.environ.get("PORT", 8000))
+    uvicorn.run(app, host="0.0.0.0", port=port)

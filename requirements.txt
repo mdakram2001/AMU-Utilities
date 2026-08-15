@@ -1,0 +1,6 @@
+fastapi>=0.138.1
+fastmcp>=3.4.2
+httpx>=0.28.1
+rapidfuzz>=3.14.5
+requests>=2.34.2
+uvicorn>=0.30.0
