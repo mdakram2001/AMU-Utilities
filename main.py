@@ -1,6 +1,5 @@
 import json
 from amu_result import Student, get_result
-from find_train_tickets import FindTicket, find_train_availability
 from fastapi import FastAPI, Request
 from fastapi.responses import Response, HTMLResponse
 from fastapi.staticfiles import StaticFiles
@@ -34,7 +33,7 @@ async def About_Us():
         "name":"AMU Utilities",
         "version":"1.0.0",
         "description":"An MCP Server that helps students of AMU to retrieve information very easily.",
-        "tools":["get_result_pdf", "get_train_ticket"],
+        "tools":["get_result_pdf"],
         "Developer":"Md Ahmod Akram Choudhury",
         "profile":"https://www.linkedin.com/in/md-ahmod-akram-choudhury/"
     }
@@ -66,29 +65,6 @@ async def get_result_pdf(
         "mime_type": "application/pdf",
         "content_base64": encoded
     }
-
-@app.post('/aka820', operation_id='Find Train Ticket')
-async def get_train_ticket(
-    source: str,
-    destination: str,
-    date_of_journey: str
-) -> List[Dict[str, Any]]:
-    """
-    This will help AMU student to get their ticket of any train. User just need to provide their source, destination and date of journey.
-    
-    :param source: Source Station Code or Name.
-    :param destination: Destination Station Code or Name.
-    :param date_of_journey: Date of Journey in DD-MM-YYYY format.
-    :return: List of trains with their availability details.
-    """
-    find_ticket = FindTicket(
-        source=source,
-        destination=destination,
-        date_of_journey=date_of_journey
-    )
-    return await find_train_availability(find_ticket)
-
-
 
 # Start the Server
 # if __name__ == "__main__":
