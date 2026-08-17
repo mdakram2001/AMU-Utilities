@@ -1,11 +1,12 @@
 import json
 from amu_result import Student, get_result
 from find_train_tickets import FindTicket, find_train_availability
-from fastapi import FastAPI
-from fastapi.responses import Response
+from fastapi import FastAPI, Request
+from fastapi.responses import Response, HTMLResponse
+from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
 from typing import List, Any, Dict
 import base64
-
 app = FastAPI(
     title="AMU Utilities",
     docs_url="/docs818",
@@ -13,11 +14,14 @@ app = FastAPI(
     openapi_url="/openapi818.json",
     )
 
+# Mount static files and initialize templates
+app.mount("/static", StaticFiles(directory="static"), name="static")
+templates = Jinja2Templates(directory="templates")
 
 # Tools
-@app.get("/")
-async def root():
-    return {"message": "This Page is Currently Unavailable..."}
+@app.get("/", response_class=HTMLResponse)
+async def root(request: Request):
+    return templates.TemplateResponse(request=request, name="index.html")
 
 
 @app.get('/aka818', operation_id='About Us')

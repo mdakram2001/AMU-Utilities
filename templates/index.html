@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AMU Utilities</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <div id="toast-container"></div>
+
+    <div class="container">
+        <header>
+            <h1>AMU Utilities</h1>
+            <p class="subtitle">Get your semester result instantly</p>
+        </header>
+
+        <main>
+            <div class="glass-card">
+                <form id="resultForm">
+                    <div class="form-group">
+                        <label for="enrollment">Enrollment Number</label>
+                        <input type="text" id="enrollment" name="enrollment" placeholder="e.g. GH1234" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="facultyNo">Faculty Number</label>
+                        <input type="text" id="facultyNo" name="facultyNo" placeholder="e.g. 21COB123" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="fullName">Full Name</label>
+                        <input type="text" id="fullName" name="fullName" placeholder="As per university records" required>
+                    </div>
+
+                    <button type="submit" class="btn-primary" id="submitBtn">
+                        <span class="btn-text">Get Result</span>
+                        <div class="spinner"></div>
+                    </button>
+                </form>
+
+                <details class="claude-config">
+                    <summary>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+                        Connect via Claude Desktop
+                    </summary>
+                    <div class="code-container">
+                        <button class="copy-btn" onclick="copyConfig()">Copy</button>
+<pre id="config-code">{
+  "mcpServers": {
+    "amu-utilities": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/client-cli",
+        "https://amu-utilities-378492016f18.herokuapp.com/sse"
+      ]
+    }
+  }
+}</pre>
+                    </div>
+                </details>
+            </div>
+        </main>
+
+        <footer class="footer">
+            Built by <a href="https://www.linkedin.com/in/md-ahmod-akram-choudhury/" target="_blank" rel="noopener noreferrer">Md Ahmod Akram Choudhury</a>
+        </footer>
+    </div>
+
+    <script src="/static/js/app.js"></script>
+</body>
+</html>
