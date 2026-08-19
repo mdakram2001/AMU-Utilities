@@ -2,7 +2,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const resultForm = document.getElementById('resultForm');
     const submitBtn = document.getElementById('submitBtn');
 
-    resultForm.addEventListener('submit', async (e) => {
+    if (resultForm) {
+        resultForm.addEventListener('submit', async (e) => {
         e.preventDefault();
 
         // Get form values
@@ -72,6 +73,28 @@ document.addEventListener('DOMContentLoaded', () => {
             submitBtn.disabled = false;
         }
     });
+    }
+
+    // Global Sidebar Handlers
+    const sidebarToggle = document.getElementById('global-sidebar-toggle');
+    const sidebar = document.getElementById('global-sidebar');
+    const overlay = document.getElementById('global-sidebar-overlay');
+    const sidebarClose = document.getElementById('global-sidebar-close');
+
+    if (sidebarToggle && sidebar && overlay) {
+        sidebarToggle.addEventListener('click', () => {
+            sidebar.classList.add('open');
+            overlay.classList.add('show');
+        });
+
+        const closeSidebar = () => {
+            sidebar.classList.remove('open');
+            overlay.classList.remove('show');
+        };
+
+        if (sidebarClose) sidebarClose.addEventListener('click', closeSidebar);
+        overlay.addEventListener('click', closeSidebar);
+    }
 });
 
 function showToast(message, type = 'success') {

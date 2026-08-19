@@ -22,6 +22,23 @@ templates = Jinja2Templates(directory="templates")
 async def root(request: Request):
     return templates.TemplateResponse(request=request, name="index.html")
 
+@app.get("/accenture", response_class=HTMLResponse)
+async def accenture_home(request: Request):
+    return templates.TemplateResponse(request=request, name="accenture_landing.html")
+
+@app.get("/accenture/games", response_class=HTMLResponse)
+async def accenture_games(request: Request):
+    return templates.TemplateResponse(request=request, name="games_landing.html")
+
+@app.get("/accenture/games/bubble-sort", response_class=HTMLResponse)
+async def bubble_sort_game(request: Request):
+    return templates.TemplateResponse(request=request, name="bubble_sort.html")
+
+# Keep backwards compatibility / redirect alias
+@app.get("/games/bubble-sort", response_class=HTMLResponse)
+async def bubble_sort_legacy(request: Request):
+    return templates.TemplateResponse(request=request, name="bubble_sort.html")
+
 
 @app.get('/aka818', operation_id='About Us')
 async def About_Us():

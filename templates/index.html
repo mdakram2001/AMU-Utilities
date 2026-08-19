@@ -1,15 +1,76 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AMU Utilities</title>
     <link rel="stylesheet" href="/static/css/style.css">
 </head>
+
 <body>
     <div id="toast-container"></div>
 
+    <!-- Global Sliding Sidebar -->
+    <div id="global-sidebar" class="global-sidebar">
+        <div class="sidebar-top">
+            <h2>AMU Utilities</h2>
+            <button id="global-sidebar-close" class="sidebar-close" aria-label="Close sidebar">&times;</button>
+        </div>
+        <div class="sidebar-menu">
+            <div class="menu-category">Main</div>
+            <a href="/" class="menu-item active">
+                <span class="item-left">🏠 Results Portal</span>
+            </a>
+
+            <div class="menu-category">Accenture Zone</div>
+            <a href="/accenture" class="menu-item">
+                <span class="item-left">🏢 Accenture Home</span>
+            </a>
+
+            <a href="/accenture/games" class="menu-item">
+                <span class="item-left">🎮 Games Section</span>
+            </a>
+            <div class="menu-subitems">
+                <a href="/accenture/games/bubble-sort" class="menu-subitem">
+                    <span>🔢 Bubble Sort</span>
+                    <span class="badge-tag live">Play</span>
+                </a>
+                <div class="menu-subitem">
+                    <span>🧩 Pattern Match</span>
+                    <span class="badge-tag soon">Soon</span>
+                </div>
+                <div class="menu-subitem">
+                    <span>⚡ Speed Arithmetic</span>
+                    <span class="badge-tag soon">Soon</span>
+                </div>
+            </div>
+
+            <a href="/accenture" class="menu-item">
+                <span class="item-left">📝 Quiz Section</span>
+                <span class="badge-tag soon">Soon</span>
+            </a>
+
+            <a href="/accenture" class="menu-item">
+                <span class="item-left">📋 Mock Test Section</span>
+                <span class="badge-tag soon">Soon</span>
+            </a>
+        </div>
+    </div>
+    <div id="global-sidebar-overlay" class="global-overlay"></div>
+
     <div class="container">
+        <nav class="nav-header">
+            <button id="global-sidebar-toggle" class="sidebar-toggle-btn"
+                style="background: transparent; border: none; outline: none; box-shadow: none;">
+                <span style="background: transparent; color: transparent;">☰</span>
+                <span style="background: transparent; color: transparent;">Menu</span>
+            </button>
+            <a href="/" class="nav-brand">
+                <span>AMU Utilities</span>
+            </a>
+        </nav>
+
         <header>
             <h1>AMU Utilities</h1>
             <p class="subtitle">Get your semester result instantly</p>
@@ -22,15 +83,16 @@
                         <label for="enrollment">Enrollment Number</label>
                         <input type="text" id="enrollment" name="enrollment" placeholder="e.g. GH1234" required>
                     </div>
-                    
+
                     <div class="form-group">
                         <label for="facultyNo">Faculty Number</label>
                         <input type="text" id="facultyNo" name="facultyNo" placeholder="e.g. 21COB123" required>
                     </div>
-                    
+
                     <div class="form-group">
                         <label for="fullName">Full Name</label>
-                        <input type="text" id="fullName" name="fullName" placeholder="As per university records" required>
+                        <input type="text" id="fullName" name="fullName" placeholder="As per university records"
+                            required>
                     </div>
 
                     <button type="submit" class="btn-primary" id="submitBtn">
@@ -41,12 +103,16 @@
 
                 <details class="claude-config">
                     <summary>
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                        </svg>
                         Connect via Claude Desktop
                     </summary>
                     <div class="code-container">
                         <button class="copy-btn" onclick="copyConfig()">Copy</button>
-<pre id="config-code">{
+                        <pre id="config-code">{
   "mcpServers": {
     "amu-utilities": {
       "command": "npx",
@@ -64,10 +130,12 @@
         </main>
 
         <footer class="footer">
-            Built by <a href="https://www.linkedin.com/in/md-ahmod-akram-choudhury/" target="_blank" rel="noopener noreferrer">Md Ahmod Akram Choudhury</a>
+            Built by <a href="https://www.linkedin.com/in/md-ahmod-akram-choudhury/" target="_blank"
+                rel="noopener noreferrer">Md Ahmod Akram Choudhury</a>
         </footer>
     </div>
 
     <script src="/static/js/app.js"></script>
 </body>
+
 </html>
