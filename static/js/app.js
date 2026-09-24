@@ -21,17 +21,17 @@ document.addEventListener('DOMContentLoaded', () => {
         submitBtn.disabled = true;
 
         try {
-            // Build query parameters
-            const url = new URL('/aka819', window.location.origin);
-            url.searchParams.append('enrollment', enrollment);
-            url.searchParams.append('faculty_no', facultyNo);
-            url.searchParams.append('full_name', fullName);
-
-            const response = await fetch(url, {
+            const response = await fetch('/aka819', {
                 method: 'POST',
                 headers: {
+                    'Content-Type': 'application/json',
                     'Accept': 'application/json'
-                }
+                },
+                body: JSON.stringify({
+                    enrollment: enrollment,
+                    faculty_no: facultyNo,
+                    full_name: fullName
+                })
             });
 
             if (!response.ok) {

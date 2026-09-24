@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3x3 Grid Path Builder | Accenture Games</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+    <link rel="stylesheet" href="/static/css/grid_path_builder.css">
+</head>
+<body>
+    <div id="toast-container"></div>
+    
+    <!-- Global Sliding Sidebar -->
+    <div id="global-sidebar" class="global-sidebar">
+        <div class="sidebar-top">
+            <h2>AMU Utilities</h2>
+            <button id="global-sidebar-close" class="sidebar-close" aria-label="Close sidebar">&times;</button>
+        </div>
+        <div class="sidebar-menu">
+            <div class="menu-category">Main</div>
+            <a href="/" class="menu-item">
+                <span class="item-left">🏠 Results Portal</span>
+            </a>
+
+            <div class="menu-category">Accenture Prep</div>
+            <a href="/accenture" class="menu-item">
+                <span class="item-left">🏢 Accenture Home</span>
+            </a>
+            
+            <a href="/accenture/games" class="menu-item active">
+                <span class="item-left">🎮 Games Section</span>
+            </a>
+            <div class="menu-subitems">
+                <a href="/accenture/games/bubble-sort" class="menu-subitem">
+                    <span>🔢 Bubble Sort</span>
+                    <span class="badge-tag live">Play</span>
+                </a>
+                <a href="/accenture/games/lock-and-key" class="menu-subitem">
+                    <span>🗝️ Lock & Key</span>
+                    <span class="badge-tag live">Play</span>
+                </a>
+                <a href="/accenture/games/grid-path-builder" class="menu-subitem active">
+                    <span>🧩 Grid Path Builder</span>
+                    <span class="badge-tag live">Playing</span>
+                </a>
+                <div class="menu-subitem">
+                    <span>⚡ Speed Arithmetic</span>
+                    <span class="badge-tag soon">Soon</span>
+                </div>
+            </div>
+
+            <a href="/accenture" class="menu-item">
+                <span class="item-left">📝 Quiz Section</span>
+                <span class="badge-tag soon">Soon</span>
+            </a>
+
+            <a href="/accenture" class="menu-item">
+                <span class="item-left">📋 Mock Test Section</span>
+                <span class="badge-tag soon">Soon</span>
+            </a>
+        </div>
+    </div>
+    <div id="global-sidebar-overlay" class="global-overlay"></div>
+
+    <div class="container game-container">
+        <!-- Top Nav -->
+        <nav class="nav-header">
+            <button id="global-sidebar-toggle" class="sidebar-toggle-btn">
+                <span>☰</span>
+                <span>Menu</span>
+            </button>
+            <a href="/" class="nav-brand">
+                <span>AMU Utilities</span>
+            </a>
+        </nav>
+
+        <!-- Breadcrumbs -->
+        <div class="breadcrumbs">
+            <a href="/">Home</a>
+            <span class="separator">/</span>
+            <a href="/accenture">Accenture</a>
+            <span class="separator">/</span>
+            <a href="/accenture/games">Games</a>
+            <span class="separator">/</span>
+            <span class="current">Grid Path Builder</span>
+        </div>
+
+        <!-- Main Game Container -->
+        <div class="gpb-wrapper">
+            <header class="gpb-header">
+                <h1>3×3 Grid Path Builder</h1>
+                <p class="subtitle">Select a 3×3 Block. Black cells are path slots; some blocks contain an extra empty black Track cell. Rotate the block or re-route arrows without changing the black-cell positions.</p>
+            </header>
+
+            <!-- Level Selection Buttons -->
+            <div class="gpb-level-row">
+                <button class="gpb-lvl-btn active" data-level="1">Level 1 (6×6)</button>
+                <button class="gpb-lvl-btn" data-level="2">Level 2 (6×6)</button>
+                <button class="gpb-lvl-btn" data-level="3">Level 3 (9×9)</button>
+                <button class="gpb-lvl-btn" data-level="4">Level 4 (9×9)</button>
+            </div>
+
+            <!-- Status / Stats Bar -->
+            <div class="gpb-status-bar">
+                <div class="gpb-status-group">
+                    <div class="gpb-stat-item">
+                        <span>Moves:</span>
+                        <strong id="move-counter">0</strong>
+                    </div>
+                    <div class="gpb-stat-item">
+                        <span>Par:</span>
+                        <strong id="par-counter">4</strong>
+                    </div>
+                </div>
+                <div class="gpb-stat-item">
+                    <span>Selected:</span>
+                    <span id="selected-block-label" class="gpb-badge-block">Block (1, 1)</span>
+                </div>
+            </div>
+
+            <!-- Board Area with Start/End Markers -->
+            <div class="gpb-board-area">
+                <div class="gpb-marker start" id="start-marker">
+                    <span>🚀</span>
+                    <span class="gpb-marker-label">Start</span>
+                </div>
+                <div class="gpb-board-card">
+                    <div id="gpb-grid" class="gpb-grid gpb-grid-6x6">
+                        <!-- Grid cells injected by JS -->
+                    </div>
+                </div>
+                <div class="gpb-marker end" id="end-marker">
+                    <span>🪐</span>
+                    <span class="gpb-marker-label">Target</span>
+                </div>
+            </div>
+
+            <!-- Exact Block Info Line as shown in screenshot -->
+            <div id="gpb-block-info" class="gpb-block-info">
+                Block (1, 1) · Rotated: 0° · Layout: 1/6
+            </div>
+
+            <!-- Action Controls Row -->
+            <div class="gpb-actions-row">
+                <button id="btn-rotate" class="gpb-btn-action btn-rotate">
+                    <span>🔄</span>
+                    <span>Rotate (90°)</span>
+                </button>
+                <button id="btn-change-dir" class="gpb-btn-action btn-change-layout">
+                    <span>↔</span>
+                    <span>Change Layout</span>
+                </button>
+                <button id="btn-validate" class="gpb-btn-action btn-validate">
+                    <span>✅</span>
+                    <span>Validate Path</span>
+                </button>
+                <button id="btn-reset" class="gpb-btn-action btn-reset">
+                    <span>🔄</span>
+                    <span>Reset Level</span>
+                </button>
+            </div>
+
+            <!-- Rules Card -->
+            <div class="gpb-rules-card">
+                <h3><span>📖</span> How to Play & Logic Rules</h3>
+                <ul>
+                    <li><strong>3×3 Block Selection:</strong> Click any cell to select its 3×3 block (highlighted with a bold red border).</li>
+                    <li><strong>Change Layout (↔):</strong> Cycles through the predefined tile layouts for the selected 3×3 block (dynamically matching its active tile count).</li>
+                    <li><strong>Rotate Tool (90° 🔄):</strong> Rotates the entire selected 3×3 block clockwise (both black/white cell patterns and arrows rotate together).</li>
+                    <li><strong>Directional Flow Logic:</strong> Build a continuous connected path from <strong>Start (🚀)</strong> to <strong>Target (🪐)</strong>.</li>
+                    <li><strong>Scoring:</strong> Solve in the minimum moves to match Par and earn 3 Stars!</li>
+                </ul>
+            </div>
+        </div>
+
+        <footer class="footer">
+            Built by <a href="https://www.linkedin.com/in/md-ahmod-akram-choudhury/" target="_blank" rel="noopener noreferrer">Md Ahmod Akram Choudhury</a>
+        </footer>
+    </div>
+
+    <!-- Victory Modal Overlay -->
+    <div id="gpb-modal" class="gpb-modal-overlay">
+        <div class="gpb-modal-card">
+            <div class="gpb-modal-icon">🎉</div>
+            <h2 class="gpb-modal-title">Level Completed!</h2>
+            <p class="gpb-modal-subtitle">Continuous path flow established successfully.</p>
+            
+            <div class="gpb-stars-row" id="modal-stars">
+                <!-- Stars rendered by JS -->
+            </div>
+
+            <div class="gpb-modal-stats">
+                <div class="gpb-modal-stat-box">
+                    <div class="gpb-modal-stat-val" id="modal-moves">0</div>
+                    <div class="gpb-modal-stat-label">Moves Used</div>
+                </div>
+                <div class="gpb-modal-stat-box">
+                    <div class="gpb-modal-stat-val" id="modal-par">0</div>
+                    <div class="gpb-modal-stat-label">Par Target</div>
+                </div>
+                <div class="gpb-modal-stat-box" style="grid-column: span 2;">
+                    <div class="gpb-modal-stat-val efficiency" id="modal-efficiency">100%</div>
+                    <div class="gpb-modal-stat-label">Move Efficiency</div>
+                </div>
+            </div>
+
+            <div class="gpb-modal-actions">
+                <button id="modal-next-btn" class="btn-next-lvl">Proceed to Next Level &rarr;</button>
+                <button id="modal-replay-btn" class="btn-replay">Replay Level</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/js/app.js"></script>
+    <script src="/static/js/grid_path_builder.js"></script>
+</body>
+</html>

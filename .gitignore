@@ -8,3 +8,13 @@ wheels/
 
 # Virtual environments
 .venv
+env/
+venv/
+
+# Local sensitive data
+data.json
+.env
+
+# Environment & IDE
+.vscode/
+.idea/
