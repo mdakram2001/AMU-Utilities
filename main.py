@@ -79,42 +79,43 @@ async def about_us():
     return info
 
 class ResultQuery(BaseModel):
-    enrollment: str = Field(..., description="Enrollment Number of the student (e.g. GH1234).")
-    faculty_no: str = Field(..., description="Faculty Number of the student (e.g. 21COB123).")
-    full_name: str = Field(..., description="Full Name of the student as per university records.")
+    enrollment_no: Optional[str] = Field(None, description="Enrollment Number or Email of the student.")
+    enrollment: Optional[str] = Field(None, description="Enrollment Number or Email of the student (alias).")
+    password: str = Field(..., description="Password of the student for ccae-amucoe.com portal.")
 
 @app.post('/aka819', operation_id='get_result_pdf')
 async def get_result_pdf(
     payload: Optional[ResultQuery] = None,
+    enrollment_no: Optional[str] = None,
     enrollment: Optional[str] = None,
-    faculty_no: Optional[str] = None,
-    full_name: Optional[str] = None,
+    password: Optional[str] = None,
 ) -> dict:
     """
     Retrieve semester exam result PDF for an AMU student.
     Returns Base64-encoded PDF of the result.
     """
-    enr = (payload.enrollment if payload else None) or enrollment
-    fac = (payload.faculty_no if payload else None) or faculty_no
-    name = (payload.full_name if payload else None) or full_name
+    enr = (payload.enrollment_no if payload and payload.enrollment_no else None) or \
+          (payload.enrollment if payload and payload.enrollment else None) or \
+          enrollment_no or enrollment
+    pwd = (payload.password if payload and payload.password else None) or password
 
-    if not enr or not fac or not name:
+    if not enr or not pwd:
         raise HTTPException(
             status_code=400,
-            detail="All fields are required: enrollment, faculty_no, and full_name."
+            detail="Both enrollment number (or email) and password are required."
         )
 
     try:
         student = Student(
             enrollment_no=enr.strip(),
-            faculty_no=fac.strip(),
-            name=name.strip()
+            password=pwd
         )
         pdf_bytes = await get_result(student)
         encoded = base64.b64encode(pdf_bytes).decode('utf-8')
 
+        safe_filename = enr.strip().replace('@', '_').replace('.', '_')
         return {
-            "filename": f"{enr.strip()}.pdf",
+            "filename": f"{safe_filename}_result.pdf",
             "mime_type": "application/pdf",
             "content_base64": encoded
         }

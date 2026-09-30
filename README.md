@@ -8,7 +8,7 @@ A modern web application and [Model Context Protocol (MCP)](https://modelcontext
 
 ### 1. 🎓 AMU Semester Results Portal
 - Instant retrieval and direct download of semester examination result PDFs.
-- Simple, elegant glassmorphic interface requiring Enrollment Number, Faculty Number, and Full Name.
+- Simple, elegant glassmorphic interface requiring Enrollment Number or Email, and Password.
 - Live integration with AMU Controller of Examinations portal.
 
 ### 2. 🤖 Model Context Protocol (MCP) Server

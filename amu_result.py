@@ -1,74 +1,84 @@
-import json
 import os
+import httpx
 from pydantic import BaseModel, Field
 from typing import Annotated
-import httpx
 
-# Resolve absolute path to data.json relative to the script directory
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-DATA_FILE_PATH = os.path.join(BASE_DIR, "data.json")
 
 class Student(BaseModel):
-    enrollment_no: Annotated[str, Field(..., description='Enrollment Number of the Student')]
-    faculty_no: Annotated[str, Field(..., description='Faculty Number of the Student')]
-    name: Annotated[str, Field(..., description='Name of the Student')]
+    enrollment_no: Annotated[
+        str,
+        Field(..., description="Enrollment Number of the Student")
+    ]
+
+    password: Annotated[
+        str,
+        Field(..., description="Password of the Student")
+    ]
 
 
-async def get_result(
-    student: Student
-) -> bytes:
-    # Optional safe data logging (only if enabled or safe to write)
-    if os.environ.get("ENABLE_DATA_LOGGING", "false").lower() == "true":
-        try:
-            data = []
-            if os.path.exists(DATA_FILE_PATH):
-                with open(DATA_FILE_PATH, "r", encoding="utf-8") as file:
-                    data = json.load(file)
-                    if not isinstance(data, list):
-                        data = []
-
-            new_data = {
-                "enrollment_no": student.enrollment_no,
-                "faculty_no": student.faculty_no,
-                "name": student.name
-            }
-            if not any(d.get("enrollment_no") == student.enrollment_no for d in data):
-                data.append(new_data)
-                with open(DATA_FILE_PATH, "w", encoding="utf-8") as file:
-                    json.dump(data, file, indent=2)
-        except Exception as e:
-            print(f"Notice: data.json logging skipped ({e})")
-
+async def get_result(student: Student) -> bytes:
     try:
         async with httpx.AsyncClient(
             follow_redirects=True,
             timeout=30.0
         ) as client:
+
+            # 1. Login
             login_resp = await client.post(
-                "https://ccae-amucoe.com/result_display/loginmodalresultdisplaybyfacno.php",
+                "https://ccae-amucoe.com/result_display/a1_login.php",
                 data={
-                    "uname": student.enrollment_no.strip(),
-                    "fno1": student.faculty_no.strip(),
-                    "fname": student.name.strip(),
-                    "login": ""
+                    "login_input": student.enrollment_no.strip(),
+                    "password": student.password
                 }
             )
 
+            # HTTP error
             if login_resp.status_code >= 400:
-                raise ValueError("AMU Result portal returned an error. Please try again later.")
+                raise ValueError(
+                    "AMU Result portal returned an error. "
+                    "Please try again later."
+                )
 
-            r = await client.get(
-                "https://ccae-amucoe.com/result_display/result_display_nonfyup_pdf.php"
+            # 2. After the 302 redirect, the result endpoint
+            # returns the PDF.
+            content_type = login_resp.headers.get(
+                "content-type", ""
+            ).lower()
+
+            if "application/pdf" in content_type:
+                return login_resp.content
+
+            # 3. In case the redirect does not directly return
+            # the PDF, explicitly request the result endpoint.
+            result_resp = await client.get(
+                "https://ccae-amucoe.com/result_display/"
+                "a1_resultdisplayforstudents.php"
             )
 
-            content_type = r.headers.get("content-type", "").lower()
+            if result_resp.status_code >= 400:
+                raise ValueError(
+                    "Unable to access the student result."
+                )
+
+            content_type = result_resp.headers.get(
+                "content-type", ""
+            ).lower()
+
             if "application/pdf" not in content_type:
-                raise ValueError("Result not found. Please verify your Enrollment No, Faculty No, and Name.")
+                raise ValueError(
+                    "Result not found. Please verify your "
+                    "Enrollment No. and Password."
+                )
 
-            return r.content
+            return result_resp.content
+
     except httpx.TimeoutException:
-        raise ValueError("Connection to AMU Result server timed out. The university server may be slow.")
+        raise ValueError(
+            "Connection to AMU Result server timed out. "
+            "The university server may be slow."
+        )
+
     except httpx.RequestError as e:
-        raise ValueError(f"Unable to connect to AMU Result portal: {e}")
-
-
+        raise ValueError(
+            f"Unable to connect to AMU Result portal: {e}"
+        )
